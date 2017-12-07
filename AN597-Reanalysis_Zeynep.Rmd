@@ -1,0 +1,22 @@
+---
+title: "Data-Reanalysis-Zeynep"
+author: "Zeynep Senveli"
+date: "10/28/2017"
+output: html_document
+---
+
+# A REPLICATION OF "BEHAVIORAL DISPLAY OF LUMBAR CURVATURE IN RESPONSE TO THE OPPOSITE SEX"
+### M.S. Thesis by Zeynep Senveli
+
+#### Short Description of the Study
+In the social sciences, throughout history, attractiveness has usually been deemed arbitrary (e.g., Berscheid & Walster, 1974; Langlois et al., 1987). However, approaching this arbitrariness using an evolutionary framework has shed light on the nature of attractiveness. Empirical evidence, especially those that come from from from non-human animals, suggests that attractive traits are not arbitrary--but they are _precisely_ the traits that help solve adaptive problems related to survival and reproduction (e.g., Norris, 1993; Petrie, 1994).  
+One of the recently discovered standards of attractiveness is the lumbar curvature of women. It has evolved to solve the adaptive challenge of a forward-shifted center-of-mass experienced during pregnancy by ancestral bipedal hominin females (Whitcome, Shapiro, & Lieberman, 2007). An optimal degree of lumbar curvature (i.e. 45.5^o^) helps decrease the strain and muscular fatigue caused by the fetal load on the spine by shifting the center-of- mass back over the hips. Women with suboptimal curvature are more susceptible to experiencing spinal injuries, muscle strain, and fatigue, and thus decreased foraging efficiency, risking nutritional stress for themselves, their mates, and offspring (Marlowe, 2003). A close-to-optimal curvature would indicate the bearer???s ability to sustain multiple pregnancies and thus her high reproductive value. Therefore, heterosexual men are expected to (and do) possess evolved psychological mechanisms that attend to cues related to lumbar wedging. Lewis and colleagues (2015) have shown that heterosexual men indeed show a preference for women with curvatures around 45.5^o^. 
+Because lumbar curvature is a cue to high survival and reproductive value in women, we would expect women to use it for self-promotion in a way that is akin to sexual displays observed in vivo in non-human animals. In the presence of a member of the opposite sex of high mate value, I hypothesized that women with suboptimal curvatures would adjust their spines to approach the biomechanical optimum to make themselves more attractive to the male.
+
+
+```{r}
+library(curl)
+f <- curl("https://raw.githubusercontent.com/zsenveli/data-reanalysis-assignment/master/Zeynep_MS-Thesis-Dataset(Final-Version)_R.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+```

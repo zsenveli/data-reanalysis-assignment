@@ -1,0 +1,296 @@
+---
+title: "Data Reanalysis Assignment on R"
+author: "Zeynep Senveli"
+date: "10/28/2017"
+output: html_document
+---
+
+#### BEHAVIORAL DISPLAY OF LUMBAR CURVATURE IN RESPONSE TO THE OPPOSITE SEX
+##### Reanalysis of my MS Thesis Dataset using R    
+     
+##### 1. Short Description of the Study
+
+> ######_"Males are promiscuous and ferociously competitive. Females--both human and of other species--are naturally monogamous. That at least is what the study of sexual behavior after Darwin assumed, perhaps because it was written by men. Only in recent years has this version of events been challenged. Females, it has become clear, are remarkably promiscuous and have evolved an astonishing array of strategies, employed both before and after copulation, to determine exactly who will father their offspring."     
+-Tim Birkhead, Promiscuity: An Evolutionary History of Sperm Competition_
+  
+  
+In the social sciences, throughout history, attractiveness has usually been deemed arbitrary (e.g., Berscheid & Walster, 1974; Langlois et al., 1987). Approaching this arbitrariness using an evolutionary framework has shed light on the nature of attractiveness. Empirical evidence, especially those that come from from from non-human animals, suggests that attractive traits are not arbitrary--but they are _precisely_ the traits that help solve adaptive problems related to survival and reproduction (e.g., Norris, 1993).
+  
+One of the recently discovered standards of attractiveness is the lumbar curvature of women. It has evolved to solve the adaptive challenge of a forward-shifted center-of-mass experienced during pregnancy by ancestral bipedal hominin females (Whitcome, Shapiro, & Lieberman, 2007). An optimal degree of lumbar curvature (i.e. 45.5^o^) helps decrease the strain and muscular fatigue caused by the fetal load on the spine by shifting the center-of- mass back over the hips. Women with suboptimal curvature are more susceptible to experiencing spinal injuries, muscle strain, and fatigue, and thus decreased foraging efficiency, risking nutritional stress for themselves, their mates, and offspring (Marlowe, 2003). A close-to-optimal curvature would indicate the bearer's ability to sustain multiple pregnancies and thus her high reproductive value. Therefore, heterosexual men are expected to (and do) possess evolved psychological mechanisms that attend to cues related to lumbar wedging. Lewis and colleagues (2015) have shown that they indeed rated women with curvatures around 45.5^o^ more attractive than women with suboptimal curvatures regardless of buttock protrusion. 
+
+
+<center>![](https://raw.githubusercontent.com/zsenveli/data-reanalysis-assignment/master/Figure-1.png)</center>
+<center>Figure 1. (Lewis, Russell, Al-Shawaf, & Buss, 2015)</center>
+<center>Men's attractiveness ratings of women's lumbar curvature</center>    
+  
+  
+  Because lumbar curvature is a cue to high survival and reproductive value in women, we would expect women to use it for self-promotion in a way that is akin to sexual displays observed in vivo in non-human animals. In the presence of a member of the opposite sex of high mate value, I hypothesized that women with suboptimal curvatures would adjust their spines to approach the biomechanical optimum to make themselves more attractive to the male.
+
+***
+##### 2. Methods, Materials, and a Very Sneaky Procedure
+The participants were asked to arrive at the lab in form-fitting clothing in a non-creepy way. In the lab, those who consented to participate were asked to fill out a set of questionnaires. The content of the questionnaires include:
+  
+* Self-perceived physical attractiveness (IPIP-PAS; International Personality Item Pool - Physical Attractiveness Scale),  
+* Self-esteem (SLSC-R; Self-Liking & Self-Competence),   
+* Personality traits (TIPI; Ten Item Personality Iventory: Openness, Agreeableness, Neuroticism, Conscientiousness, Extroversion),
+* Sociosexual orientation (SOI-R; Sociosexual Orientation Inventory-Revised: Attitute towards casual sex--higher scores imply more openness to it)
+* Attractiveness ratings of the confederate and the research assistant on a scale from 1 to 10 (1 = Extremely Unattractive, 10 = Extremely Attractive)
+    
+Upon completion, the research assistant (me) guided participants to the room where their photograph would be taken. The first photograph was taken with the participant's body and face turned 90 degrees away from the camera in a natural posture. After taking this photograph, the research assistant feigned having trouble with the camera and informed the participant that she failed to take the picture. The assistant then summoned an attractive male confederate into the room "to help". The confederate solved the supposed problem and stayed and watched the assistant take the same photograph again. The confederate stood next to the camera, so that participants could see that they were being watched by the confederate. After their photographs were taken, participants were guided back to the computer laboratory to fill out a survey that asked participants to rate the attractiveness of both the research assistant and the male confederate. Thirty-six women (M*age* = 20.06 years, SD*age* = 1.41) participated in the study. All were at least 18 years of age and 36 were heterosexual and 2 were bisexual.
+
+
+  
+***
+##### 3. Statistical Analyses
+Installing the necessary packages to carry out the analysis: 
+```{r}
+library(ggplot2)
+library(dplyr)
+library(curl)
+library(stats)
+library(psych)
+```
+
+Reading in the raw dataset from my public GitHub repository and here is how it looks like--or at least the first 6 lines. Every row represents one participant and the dataset holds information about participant's answers to the questionnaires listed above as well as demographics.
+```{r}
+f <- curl("https://raw.githubusercontent.com/zsenveli/data-reanalysis-assignment/master/Zeynep_MS-Thesis-Dataset(Final-Version)_R.csv")
+d <- read.csv(f, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+```
+
+The first set of analyses will examine the lumbar curvature (LC) change in absolute deviation from the suggested biomechanical optimum of 45.5^o^ from pre- to post-exposure to the attractive male confederate. Participants??? degree of LC was measured once before and once after they were exposed to the attractive male confederate. These were subtracted from the optimum (45.5^o^) and their absolute values were used to obtain two scores for each participant (one representing the deviation from 45.5 degrees pre-deviation and one representing the deviation from 45.5 post-exposure). A final deviation score for each participant was calculated by subtracting the absolute post- from pre-deviation scores and was used in the first set of analyses. To examine the change in absolute deviation pre- to post-exposure, I will run a single samples t-test on the final deviation scores for each participant (and I will call this dependent variable "LC_dev_change"):
+
+```{r}
+LC_dev <- d$LCdeviation_closerto455whenIagoisthere #This is how it's called in the dataset, but it's really long and confusing so I'm assigning it to a new and less confusing variable name
+head(LC_dev)
+t_LC_dev <- t.test(LC_dev) #Assigning the results of my single sample t-test that I conduct on my dependent variable into a variable called t_LC_dev.
+t_LC_dev
+```
+
+The single sample t-test ( _t_(35)=0.46, _p_ >> .05) revealed that the change in the absolute deviation in lumbar curvature from pre- to post-exposure to the confederate is non-significant. 
+  
+  
+The first set of analyses showed no change in lumbar curvature anchored to the suggested biomechanical optimum. The second set of analyses will examine if there is a general change in lumbar curvature ( _any_ change) from before to after exposure to the attractive male confederate. The dependent variable in this case is created by subtracting the degree of lumbar curvature pre-exposure from post-exposure (and I will call this dependent variable "LC_change"). To see if there is indeed a change (at all), I will conduct a single sample t-test on LC_change. 
+```{r}
+LC_change <- na.omit(d$LC_change)
+t_LC_change <- t.test(LC_change)
+t_LC_change
+```
+Single sample t-test results point toward a significant change in lumbar curvature ( _t_(35)=4.15, _p_ < .001). Now that I know there is significant change in lumbar curvature, I would like to understand the nature of the change by examining the effect of potential confounds by performing bivariate correlations and using linear regression to visualize the relationship (or lack thereof). 
+
+***
+
+##### _i._ Self-perceieved physical attractiveness (IPIP-PAS):
+```{r}
+PAS <- na.omit(d$PAS_Total)
+cor_PAS_LC_change <- cor.test(x = PAS, y = LC_change, method = "pearson")
+cor_PAS_LC_change
+g <- ggplot(data = d, aes(x = PAS, y = LC_change), colour = "blue") + geom_point()
+g <- g + ggtitle("The Relationship Between Self-Perceieved Physical Attractiveness \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Self-Perceived Physical Attractiveness")
+g <- g + theme(plot.title = element_text(colour = "steelblue4", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "steelblue4", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x, colour = "mediumpurple4")
+g 
+```
+
+A Pearson's correlation revealed that there is no correlation ( _r_(31) = .06, _p_ >> .05) between participants' self-perceived physical attractiveness and the change in lumbar curvature they have exhibited. 
+
+***
+
+##### _ii._ Self-Esteem (SLSC-R):
+```{r}
+SLSCR <- na.omit(d$SLSCR_Total)
+cor_SLSCR_LC_change <- cor.test(x = SLSCR, y = LC_change, method = "pearson")
+cor_SLSCR_LC_change
+g <- ggplot(data = d, aes(x = SLSCR, y = LC_change), colour = "indianred4") + geom_point()
+g <- g + ggtitle("The Relationship Between Self-Esteem \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Self-Esteem")
+g <- g + theme(plot.title = element_text(colour = "indianred4", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "indianred4", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x, color = "pink4")
+g 
+```
+
+A Pearson's correlation revealed that there is no correlation ( _r_(31) = -.03, _p_ >> .05) between participants' self-esteem and the change in lumbar curvature they have exhibited. 
+
+***
+
+##### _iii._ Personality traits (TIPI) - Emotional Stability:
+  
+
+```{r}
+EmoSt <- na.omit(d$TIPI_EmoSt)
+cor_EmoSt_LC_change <- cor.test(x = EmoSt, y = LC_change, method = "pearson")
+cor_EmoSt_LC_change
+g <- ggplot(data = d, aes(x = EmoSt, y = LC_change), colour = "darkslategray4") + geom_point()
+g <- g + ggtitle("The Relationship Between Emotional Stability \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Emotional Stability")
+g <- g + theme(plot.title = element_text(colour = "darkslategray4", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "darkslategray4", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x, colour = "lightcoral")
+g 
+```
+
+
+A Pearson's correlation revealed that there is no correlation ( _r_(31) = .09, _p_ >> .05) between participants' emotional stability and the change in lumbar curvature they have exhibited. 
+  
+    
+#####  _iv._ Personality traits (TIPI) - Agreeableness:
+```{r}
+Agr <- na.omit(d$TIPI_Agr)
+cor_Agr_LC_change <- cor.test(x = Agr, y = LC_change, method = "pearson")
+cor_Agr_LC_change
+g <- ggplot(data = d, aes(x = EmoSt, y = LC_change), colour = "seagreen4") + geom_point()
+g <- g + ggtitle("The Relationship Between Agreeableness \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Agreeableness")
+g <- g + theme(plot.title = element_text(colour = "seagreen4", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "seagreen4", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x, colour = "lightgoldenrod4")
+g 
+```
+
+
+A Pearson's correlation revealed that there is no correlation ( _r_(31) = .03, _p_ >> .05) between participants' agreeableness and the change in lumbar curvature they have exhibited. 
+
+  
+##### _v._ Personality traits (TIPI) - Openness:
+```{r}
+Open <- na.omit(d$TIPI_Open)
+cor_Open_LC_change <- cor.test(x = Open, y = LC_change, method = "pearson")
+cor_Open_LC_change
+g <- ggplot(data = d, aes(x = Open, y = LC_change), colour = "olivedrab") + geom_point()
+g <- g + ggtitle("The Relationship Between Openness \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Openness")
+g <- g + theme(plot.title = element_text(colour = "olivedrab", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "olivedrab", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x, colour = "yellow4")
+g 
+```
+
+
+A Pearson's correlation revealed that there is no correlation ( _r_(31) = .18, _p_ >> .05) between participants' openness and the change in lumbar curvature they have exhibited.
+
+##### _vi._ Personality traits (TIPI) - Extroversion:
+```{r}
+Extro <- na.omit(d$TIPI_Ext)
+cor_Extro_LC_change <- cor.test(x = Extro, y = LC_change, method = "pearson")
+cor_Extro_LC_change
+g <- ggplot(data = d, aes(x = Extro, y = LC_change), colour = "palegreen4") + geom_point()
+g <- g + ggtitle("The Relationship Between Extroversion \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Extroversion")
+g <- g + theme(plot.title = element_text(colour = "palegreen4", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "palegreen4", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x, colour = "khaki")
+g 
+```
+
+
+A Pearson's correlation revealed that there is no correlation ( _r_(31) = -.01, _p_ >> .05) between participants' extroversion and the change in lumbar curvature they have exhibited. 
+  
+    
+    
+##### _vii._ Personality traits (TIPI) - Conscientiousness:
+```{r}
+Cons <- na.omit(d$TIPI_Cons)
+cor_Cons_LC_change <- cor.test(x = Cons, y = LC_change, method = "pearson")
+cor_Cons_LC_change
+g <- ggplot(data = d, aes(x = Cons, y = LC_change), colour = "aquamarine4") + geom_point()
+g <- g + ggtitle("The Relationship Between Concientiousness \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Conscientiousness")
+g <- g + theme(plot.title = element_text(colour = "aquamarine4", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "aquamarine4", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x, colour = "lightgreen")
+g 
+```
+
+
+A Pearson's correlation revealed that there is no correlation ( _r_(31) = -0.2, _p_ >> .05) between participants' conscientiousness and the change in lumbar curvature they have exhibited. 
+
+***
+
+##### _viii._ Male Confederate's Attractiveness:
+```{r}
+Confed_Att <- na.omit(d$Male_RA)
+cor_Confed_Att_LC_change <- cor.test(x = Confed_Att, y = LC_change, method = "pearson")
+cor_Confed_Att_LC_change
+g <- ggplot(data = d, aes(x = Confed_Att, y = LC_change), colour = "blue") + geom_point()
+g <- g + ggtitle("The Relationship Between Confederate's Attractiveness \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Confederate's Attractiveness")
+g <- g + theme(plot.title = element_text(colour = "steelblue4", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "steelblue4", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x)
+g 
+```
+
+Results indicate that the change in participants' lumbar curvature was not due to male confederate's attractiveness ( _r_(31) = 0.07, _p_ >> .05).
+  
+***
+  
+##### _ix._ Sociosexual orientation (SOI-R):  
+```{r}
+SOIR <- na.omit(d$SOIR_Total)
+cor_SOIR_LC_change <- cor.test(x = SOIR, y = LC_change, method = "pearson")
+cor_SOIR_LC_change
+lm_SOIR_LC_change <- lm(LC_change ~ SOIR)
+summary(lm_SOIR_LC_change)
+g <- ggplot(data = d, aes(x = SOIR, y = LC_change), colour = "mediumpurple4") + geom_point()
+g <- g + ggtitle("The Relationship Between Sociosexual Orientation \nand Change in Lumbar Curvature")
+g <- g + labs(y = "Lumbar Curvature Change", x = "Sociosexual Orientation")
+g <- g + theme(plot.title = element_text(colour = "mediumpurple4", size = (13), face = "bold", hjust = 0.5), 
+               axis.title = element_text(colour = "mediumpurple4", size = (11), face = "bold"))
+g <- g + geom_smooth(method = "lm", formula = y ~ x, colour = "slategray4")
+g
+```
+
+A Pearson's correlation revealed that there is a moderately positive correlation ( _r_(31) = .43, _p_ = .01) between participants' sociosexual orientation and the change in lumbar curvature they have exhibited. The subsequent linear regression results ( _r_(31) = .013, _p_ = .01) supported that those participants who indicated more openness towards casual sex, were more likely to change their lumbar curvature from pre- to post-exposure to the attractive male confederate. Sociosexual orientation also significantly predicted a about a fifth of the variance in the change in lumbar curvature, _R^2^_ = .18, _F_(1,31) = 6.90, _p_ < .05.
+
+Below you will find the graph I have obtained using JASP and SPSS in my thesis manuscript, so that you can compare my previous result to the current result (right above). 
+<center>![](https://raw.githubusercontent.com/zsenveli/data-reanalysis-assignment/master/Figure-2.png)</center>
+<center>Figure 2. (Senveli, 2017) The relationship between sociosexual orientation and change in lumbar curvature.</center> 
+  
+***
+
+##### 4. Results and Discussion
+  
+The first set of analyses examined whether participants made an adjustment to achieve or get closer to the suggested biomechanical optimum of 45.5^o^ from before to after they saw the attractive male confederate. The suggested optimum of 45.5^o^ is aimed at solving the adaptive problem of a debilitating fetal load experienced specifically by bipedal hominin females. The current set of results, did not provide support for a display of change anchored to this optimum and pointed towards a general increase, which is potentially aimed at solving a different adaptive problem--attracting a member of the opposite sex of high mate value. The positive relationship between participants' openness to short-term mating and the increase they have displayed supports the hypothesis that women arch their back as a cue to signal their sexual receptivity to a male conspecific. This has been studied extensively in rodents (e.g., Pfaff & Sakuma, 1979; Park & Rissman, 2011) and certain mammals (Natterson-Horrowitz & Bowers, 2012), but has not yet been the focus of human mating research. If my interpretation is correct, these results might be the first empirical demonstration of lordotic behavior in humans.
+  
+***
+  
+  
+##### 5. References
+
+Berscheid, E., & Walster, E. (1974). Physical attractiveness. In L. Berkowitz (Ed.), _Advances in experimental social psychology_ (pp. 157-215). New York, NY: Academic Press.
+  
+  
+Langlois, J. H., Roggman, L. A., Casey, R. J., Ritter, J. M., Rieser-Danner, L. A., & Jenkins, V. Y. (1987). Infant preferences for attractive faces: Rudiments of a stereotype. _Developmental Psychology_, _23_, 363-369, http://dx.doi.org/10.1037/0012-1649.23.3. 363.
+  
+  
+Lewis, D. M., Russell, E. M., Al-Shawaf, L., & Buss, D. M. (2015). Lumbar curvature: A previously undiscovered standard of attractiveness. _Evolution and Human Behavior, 36_(5), 345-350, doi:10.1016/j.evolhumbehav.2015.01.007
+  
+  
+Marlowe, F. W. (2003). A critical period for provisioning by Hadza men: Implications for pair bonding. _Evolution and Human Behavior, 24_, 217-229, http://dx.doi.org/10.10 16/S1090-5138(03)00014-X.
+  
+  
+Natterson-Horrowitz, B., & Bowers, K. (2012). _Zoobiquity: What animals can teach us about being human._ UK: Ebury Publishing.
+  
+  
+Norris, K. (1993). Heritable variation in a plumage indicator of viability in male great tits Parus major. _Nature_, _362_, 537-539, http://dx.doi.org/10.1038/362537a0.
+  
+  
+Park, J. H., & Rissman, E. F. (2011). Behavioral neuroendocrinology of reproduction in mammals (D. O. Norris & K. H. Lopez, Eds.). _In Hormones and Reproduction of Vertebrates_ (pp. 139-173). London: Academic Press. doi:https://doi.org/10.1016/B978-0-12-374928-4.10008-2
+  
+  
+Pfaff, D. W., & Sakuma, Y. (1979). Facilitation of the lordosis reflex of female rats from the ventromedial nucleus of the hypothalamus. _Journal of Physiology, 288_(1), 189-202.
+  
+  
+Whitcome, K. K., Shapiro, L. J., & Lieberman, D. E. (2007). Fetal load and the evolution of lumbar lordosis in bipedal hominins. _Nature_, _450_, 1075-1078, http://dx.doi.org/10. 1038/nature06342.
+
+
+
+
+
+
+
+
+
